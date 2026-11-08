@@ -1,5 +1,5 @@
 import express from 'express';
-import { getBooksHandler, getBookByIdHandler } from './controllers/books.js';
+import { getBooksHandler, getBookByIdHandler, createBookHandler, updateBookHandler, deleteBookHandler } from './controllers/books.js';
 
 const router = express.Router();
 
@@ -41,6 +41,129 @@ router.get('/books', getBooksHandler);
  *         description: Unable to retrieve book
  */
 router.get('/books/:id', getBookByIdHandler);
+
+/**
+ * @openapi
+ * /books:
+ *   post:
+ *     summary: Create a book
+ *     tags:
+ *       - Books
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - id
+ *               - authorId
+ *               - title
+ *               - publicationDate
+ *             properties:
+ *               id:
+ *                 type: string
+ *               authorId:
+ *                 type: string
+ *               title:
+ *                 type: string
+ *               publicationDate:
+ *                 type: string
+ *           example:
+ *             id: b2
+ *             authorId: a2
+ *             title: Harry Potter and the Philosopher's Stone
+ *             publicationDate: 1997-06-26
+ *     responses:
+ *       201:
+ *         description: Book created successfully
+ *       400:
+ *         description: Invalid book data
+ *       500:
+ *         description: unable to create a book
+ */
+router.post('/books', createBookHandler)
+
+/**
+ * @openapi
+ * /books/{id}:
+ *   put:
+ *     summary: Update an existing book
+ *     tags:
+ *       - Books
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Custom Book ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - authorId
+ *               - title
+ *               - publicationDate
+ *             properties:
+ *               authorId:
+ *                 type: string
+ *               title:
+ *                 type: string
+ *               publicationDate:
+ *                 type: string
+ *           example:
+ *             authorId: a2
+ *             title: Harry Potter and the Goblet of Fire
+ *             publicationDate: 2000-07-08
+ *     responses:
+ *       200:
+ *         description: Book updated successfully
+ *       400:
+ *         description: Bad Request (missing fields)
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Internal server error
+ */
+router.put('/books/:id', updateBookHandler)
+
+/**
+ * @openapi
+ * /books/{id}:
+ *   delete:
+ *     summary: Delete a book
+ *     tags:
+ *       - Books
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Book deleted successfully
+ *       404:
+ *         description: Book not found
+ *       500:
+ *         description: Unable to delete book
+ */
+router.delete('/books/:id', deleteBookHandler)
+
+
+
+
+
+
+
+
+
+
+
 
 
 import { getAllAuthors, getAuthorById, createAuthor, updateAuthor, deleteAuthor } from './controllers/authors.js';
@@ -122,6 +245,8 @@ router.get('/authors/:id', getAuthorById);
  *         description: Author created successfully
  *       400:
  *         description: Invalid author data
+ *       500:
+ *         description: unable to create the author
  */
 router.post('/authors', createAuthor)
 
